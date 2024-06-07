@@ -1,0 +1,31 @@
+const chatRooms = {};
+
+function addMessage(req, res) {
+  const roomId = req.params.roomId;
+  const { senderId, content } = req.body;
+
+  if (!roomId || !senderId || !content) {
+    return res.status(400).json({ error: 'Missing Required Fields.' });
+  }
+
+  if (!chatRooms[roomId]) {
+    chatRooms[roomId] = [];
+  }
+
+  const timestamp = new Date().toISOString();
+  const message = { timestamp, senderId, content };
+  chatRooms[roomId].push(message);
+
+return res.status(200).json({ message });
+}
+
+function getMessages(req, res) {
+  const roomId = req.params.roomId;
+  const messages = chatRooms[roomId] || [];
+
+return res.status(200).json({ messages });
+
+
+}
+
+module.exports = { addMessage, getMessages };
